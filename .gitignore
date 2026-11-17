@@ -1,0 +1,11 @@
+# Local project instructions
+AGENTS.md
+
+# Python and local environments
+__pycache__/
+*.py[cod]
+.venv/
+
+# Local logs and generated data; keep the synthetic demo available
+*.log
+!sample.log
