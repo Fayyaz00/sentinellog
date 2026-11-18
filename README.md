@@ -3,7 +3,8 @@
 SentinelLog is a local Python security log analysis project.
 
 SentinelLog summarizes severity levels, groups identical error messages, and
-shows their original line numbers. It uses only Python's standard library and
+shows their original line numbers. It also flags repeated failed-login messages
+by service. It uses only Python's standard library and
 requires no account.
 
 In PowerShell, from this folder, run:
@@ -29,9 +30,24 @@ Error messages are grouped by exact message
 text across services; no security conclusion is inferred from the severity.
 Other log formats may require a different parser.
 
+## Failed-login findings
+
+The rule counts recognized log messages containing `Invalid credentials`,
+case-insensitively, separately for each service. It reports a service after five
+matching lines across the entire file, with up to five example line numbers.
+Change the threshold with:
+
+```powershell
+py analyze.py sample.log --failed-login-threshold 1
+```
+
+For example, `2026-01-10 14:35:02 WARN auth-service Invalid credentials for
+user_17` counts toward `auth-service`. This phrase-based rule is an investigative
+signal, not proof of an attack; it does not correlate accounts or use time windows.
+
 The file is read one line at a time, and repeated events retain only their count
 and a few example locations. Memory still grows with the number and length of
-distinct error messages; this version is intended for local log files, not
+distinct error messages and services; this version is intended for local log files, not
 unbounded or high-cardinality log streams.
 
 Run the tests with:
